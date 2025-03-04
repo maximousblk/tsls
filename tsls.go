@@ -6,13 +6,13 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"slices"
 	"time"
 
 	"tailscale.com/ipn/store/mem"
 	"tailscale.com/tsnet"
 
 	"github.com/joho/godotenv"
-	"slices"
 )
 
 type ListFlag []string
@@ -38,8 +38,8 @@ func main() {
 		log.Fatal("Error loading .env file", err)
 	}
 
-	authKey := os.Getenv("TS_AUTHKEY")
-	controlURL := os.Getenv("TS_CONTROL_URL")
+	authKey := os.Getenv("TAILSCALE_AUTHKEY")
+	controlURL := os.Getenv("TAILSCALE_LOGIN_SERVER")
 
 	log.Println("hostname: ", "tsls")
 	log.Println("control Server URL: ", controlURL)
@@ -55,10 +55,10 @@ func main() {
 	// Create a new tsnet Server
 	server := &tsnet.Server{
 		Hostname:   "tsls",
-		AuthKey:    os.Getenv("TS_AUTHKEY"),
+		AuthKey:    authKey,
+		ControlURL: controlURL,
 		Store:      store,
 		Ephemeral:  true,
-		ControlURL: os.Getenv("TS_CONTROL_URL"),
 	}
 
 	// Start the server
